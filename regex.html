@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Analisador Léxico via Busca por RegEx</title>
+    <link rel="shortcut icon" href="img/favicon.ico">
+
+    <link rel="stylesheet" href="css/fonts.css">
+    <link rel="stylesheet" href="css/slides.css">
+    <link rel="stylesheet" href="css/regex.css">
+
+    <script src="js/regex.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <section class='title'>
+      <div class='left'>
+        <h1>Compiladores - Analisador Léxico via Busca por RegEx</h1>
+        <h2>Ygor Henrique de Paula Barros Baêta</h2>
+      </div>
+      <ul>
+        <li>Análise Léxica</li>
+        <li>Revisão Expressões Regulares</li>
+        <li>Tokenização</li>
+        <li>Erros Léxicos</li>
+        <li>Exemplo</li>
+      </ul>
+    </section>
+    <section class='list content'>
+      <h1>Análise Léxica  </h1>
+      <ul>
+        <li>Tem como Objetivo Transformar uma cadeia de caracteres em um vetor de Tokens</li>
+        <li>Facilita a execução da análise sintática <em>*</em></li>
+        <li>A compreensão deste analisador é baseada nos seguintes conceitos de Teoria de Linguagens: </li>
+        <ul>
+          <li>Expressões Regulares</li>
+        </ul>
+      </ul>
+      <em>* Essa análise não é estritamente nescessária para todos tipos de analisador sintáticos</em>
+    </section>
+    <section class='list content'>
+      <h1>Revisão Expressões Regulares</h1>
+      <ul>
+        <li>É considerada uma Expressão Regular:</li>
+        <ul>
+          <li>a &rightarrow; Onde a é qualquer terminal incluindo vazio</li>
+          <li>AB &rightarrow; Onde A e B são Expressões Regulares</li>
+          <li>A|B &rightarrow; Onde A e B são Expressões Regulares</li>
+          <li>A* &rightarrow; Onde A é uma Expressão Regular</li>
+        </ul>
+        <li>
+          Usaremos também algumas outras funcionalidades que não são especificamente
+          de expressões regulares mas da maioria de suas implementações:
+        </li>
+        <ul>
+          <li>Grupos de captura</li>
+          <li>Quantificadores Avançados</li>
+          <li>Meta-sequencias</li>
+        </ul>
+      </ul>
+    </section>
+    <section class='content' id='regex_playground'>
+      <h1>Revisão Expressões Regulares</h1>
+      <div>
+        <div>
+          <span>/</span>
+          <input type="text" value="0?x([a-f0-9]+)" id='regex_body'>
+          <span>/</span>
+          <input type="text" value="gi" id='regex_flags'>
+        </div>
+        <textarea id='regex_text'>0120&#13;0xff&#13;0xj12&#13;x123Abc&#13;23.75</textarea>
+        <ul id='regex_result'></ul>
+      </div>
+    </section>
+    <section class='content list'>
+      <h1>Tokenização via <i>Match</i></h1>
+      <ul>
+        <li>Percorre o arquivo de entrada e executa um match para cada token <em> * </em></li>
+        <li>Todos os tokens devem ser capazes de ser escritos usando um ReGex</li>
+        <li>A principal vantagem deste método é a otimização gratúita que as Linguagens de programação já possuem</li>
+      </ul>
+      <em>* Em algumas linguagens de programação é possivel executar sequencialmente e continuamente um regex</em>
+    </section>
+    <section class='content list'>
+      <h1>Erros Léxicos</h1>
+      <ul>
+        <li>Existem duas maneiras de encontrar e reportar erros léxicos usando esse método: </li>
+        <ul>
+          <li>Utilização de um catch-all</li>
+          <li>Retorno Null</li>
+        </ul>
+        <li>O método escolhido depende da linguagem em que o analisador será implementado</li>
+      </ul>
+    </section>
+    <section class='content' id='example'>
+      <h1>Exemplo</h1>
+      <div>
+        <textarea id='example_input'>a = 10 + (b * c)</textarea>
+        <span> + </span>
+        <textarea id='example_tokens'>ID = [a-zA-Z_][a-zA-Z0-9_]*&#13;NUM = ([0-9]+.[0-9]+)|([0-9]+)&#13;PLUS = \+&#13;MINUS = -&#13;EXP = \*\*&#13;MULT = \*&#13;DIV = \\&#13;ATTR = =&#13;LPAR = \(&#13;RPAR = \)</textarea>
+        <span> = </span>
+        <div id='example_results'></div>
+        <table id='example_state'>
+          <thead>
+            <tr>
+              <th colspan='2'>Indice Atual</th>
+              <th colspan='2'>Match Atual</th>
+              <th rowspan='2'>Token Atual</th>
+              <th rowspan='2'>Delay</th>
+            </tr>
+            <tr>
+              <th>#</th>
+              <th>Conteúdo</th>
+              <th>Full Match</th>
+              <th>Grupos de Captura</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td id='example_idx'></td>
+              <td id='example_current'></td>
+              <td id='example_m0'></td>
+              <td id='example_marr'></td>
+              <td id='example_tkn'></td>
+              <td><input type="number" id='example_spd' min='0' value="0"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <a href="index.html"> &lt; Voltar </a>
+    </section>
+  </body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Analise Sintática via Descida Recursiva</title>
+    <link rel="shortcut icon" href="img/favicon.ico">
+
+    <link rel="stylesheet" href="css/fonts.css">
+    <link rel="stylesheet" href="css/slides.css">
+    <link rel="stylesheet" href="css/recursive.css">
+
+    <script src="js/recursive.js" charset="utf-8"></script>
+  </head>
+  <body>
+    <section class='title'>
+      <div class='left'>
+        <h1>Compiladores - Analise Sintática via Descida Recursiva</h1>
+        <h2>Ygor Henrique de Paula Barros Baêta</h2>
+      </div>
+      <ul>
+        <li>Análise Sintática</li>
+        <li>Gramáticas Livres de Contexto</li>
+        <li>Forma Normal de Greybach</li>
+        <li>First e Follow</li>
+        <li>Descida Recursiva</li>
+        <li>Exemplo</li>
+        <li>Análise Semântica</li>
+      </ul>
+    </section>
+    <section class='list content'>
+      <h1>Análise Sintática</h1>
+      <ul>
+        <li>Tem como objetivo Verificar a estruturação do código</li>
+        <li>Trabalha com &ldquo;blocos sintáticos&rdquo; que normalmente descrevem um comando simples</li>
+        <li>A compreensão deste analisador é baseada nos seguintes conceitos de Teoria de Linguagens: </li>
+        <ul>
+          <li>Gramáticas</li>
+          <li>Formas Normais</li>
+        </ul>
+      </ul>
+    </section>
+    <section class='list content'>
+      <h1>Gramáticas Livres de Contexto</h1>
+      <ul>
+        <li>
+          Uma gramática livre de contexto é uma formalização para a definição de
+          linguagens livres de contexto
+        </li>
+        <li>É definida como uma quadrupla G=(V, &Sigma;, R, S) onde:</li>
+        <ul>
+          <li>V é um conjunto finito de não terminais</li>
+          <li>&Sigma; é um conjunto de terminais, disjuntos de V</li>
+          <li>R é uma relação V &rightarrow; (V &cup; &Sigma;)*</li>
+          <li>S &isin; V, o simbolo inicial</li>
+        </ul>
+      </ul>
+    </section>
+    <section class='list content'>
+      <h1>Forma Normal de Greybach</h1>
+      <ul>
+        <li>
+          Proposto por Sheila Adele Greibach, a forma normal de Greibach
+          tem produções que seguem a forma
+        </li>
+        <ul>
+          <li>A &rightarrow; a</li>
+          <li>A &rightarrow; a&alpha; &#8870; &alpha; &isin; (V - S)*</li>
+          <li>S &rightarrow; &epsilon;</li>
+        </ul>
+        <li>
+          Essa forma ajuda na derivação top-down, garantindo que o parser pare em até
+          O(n) passos para qualquer produção
+        </li>
+        <li>
+          Para qualquer Gramática há uma gramática equivalente na forma normal de
+          Greybach
+        </li>
+      </ul>
+    </section>
+    <section class='list content'>
+      <h1>Forma Normal de Greybach</h1>
+      <ul>
+        <li>
+          Converter uma Gramática para a Forma normal de Greibach é possivel com
+          5 passos
+        </li>
+        <ul>
+          <li>Eliminação de produções do tipo A &rightarrow; &alpha;S&beta;</li>
+          <li>Eliminação de recursão direta e indireta à esquerda</li>
+          <li>Eliminação de produções do tipo A &rightarrow; &epsilon;</li>
+          <li>Eliminação de produções do tipo A &rightarrow; B</li>
+          <li>Eliminação de produções que ferem a forma normal</li>
+        </ul>
+      </ul>
+    </section>
+    <section class='list content'>
+      <h1>Conjunto First</h1>
+      <ul>
+        <li>
+          Uma maneira mais simples de encontrar qual produção aplicar são os
+          conjuntos First e Follow
+        </li>
+        <li>
+          Para este método especificamente o conjunto First pode ser utilizado
+          para decidir qual função deve ser chamada.
+        </li>
+        <li>
+          O conjunto First de Uma produção é definido por:
+        </li>
+        <ul>
+          <li>First(a) = a &#8870; a &isin; (&Sigma; &cup; &epsilon;)</li>
+          <li>First(A) &sup; First(B) &forall; B &#8870; A &rightarrow; B&alpha;</li>
+          <li>First(A) &sup; First(B) &forall; B &#8870; A &rightarrow; &alpha;B &and; &alpha; &Rarr; &epsilon; </li>
+        </ul>
+      </ul>
+    </section>
+    <section class='content' id='first'>
+      <h1>Conjunto First</h1>
+      <div>
+        <textarea id='first_grammar'>S -> AB | &&#13;A -> a | bS&#13;B -> SA</textarea>
+        <ul id='first_result'></ul>
+      </div>
+    </section>
+    <section class='list content'>
+      <h1>Descida Recursiva</h1>
+      <ul>
+        <li>A descida recursiva representa cada produção como uma função</li>
+        <li>A aplicação de uma produção equivale à chamada dessa mesma função</li>
+        <li>Terminais São descritos por uma função especial <i>Match</i></li>
+        <ul>
+          <li>Match(t):</li>
+          <li>Se entrada[indice_atual] == t:</li>
+          <ul>
+            <li>indice_atual++</li>
+            <li>Retorne Verdadeiro</li>
+          </ul>
+          <li>Senão:</li>
+          <ul>
+            <li>Retorne Falso</li>
+          </ul>
+        </ul>
+      </ul>
+    </section>
+    <section class='content' id='example'>
+      <h1>Descida Recursiva</h1>
+      <div>
+        <textarea id='example_tokens'>NUM PLUS LPAR ID MULT ID RPAR</textarea>
+        <span> + </span>
+        <textarea id='example_grammar'>expressao -> parcela PLUS expressao | parcela MINUS expressao | parcela&#13;parcela -> termo MULT parcela | termo DIV parcela | termo&#13;termo -> LPAR expressao RPAR | NUM | ID</textarea>
+        <span> = </span>
+        <div id='example_results'></div>
+        <table id='example_state'>
+          <thead>
+            <tr>
+              <th colspan="2">Token Atual</th>
+              <th colspan="2">Chamadas de Função</th>
+              <th rowspan="2">Produção Atual</th>
+              <th rowspan="2">Delay</th>
+            </tr>
+            <tr>
+              <th>#</th>
+              <th>Token</th>
+              <th>Função</th>
+              <th>Altura</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td id='example_idx'></td>
+              <td id='example_tkn'></td>
+              <td id='example_f'></td>
+              <td id='example_stack'></td>
+              <td id='example_prod'></td>
+              <td><input type="number" id='example_spd' min='0' value="0"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <section class='list content'>
+      <h1>Análise Semântica</h1>
+      <ul>
+        <li>Existe uma maneira de adaptar esse método para a realização da análise semântica</li>
+        <li>A saida deste método adaptado é normalmente é uma Árvore de Sintaxe Abstrata</li>
+        <li>A adaptação deste método depende exclusivamente da adaptação do retorno das funções</li>
+      </ul>
+      <a href="index.html"> &lt; Voltar </a>
+    </section>
+  </body>
+</html>

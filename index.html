@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Introdução - Compiladores</title>
+    <link rel="shortcut icon" href="img/favicon.ico">
+
+    <link rel="stylesheet" href="css/fonts.css">
+    <link rel="stylesheet" href="css/slides.css">
+    <link rel="stylesheet" href="css/intro.css">
+  </head>
+  <body>
+    <section class='title'>
+      <div class='left'>
+        <h1>Compiladores - Visão Geral</h1>
+        <h2>Ygor Henrique de Paula Barros Baêta</h2>
+      </div>
+      <ul>
+        <li>O que é um compilador</li>
+        <li>Entradas e Saidas</li>
+        <li>Diferentes Métodos</li>
+      </ul>
+    </section>
+    <section class='list content'>
+      <h1>O que é um compilador ?</h1>
+      <ul>
+        <li>Tradutor: linguagem de entrada para linguagem destino</li>
+        <li>Em geral é dividido em camadas</li>
+        <ul>
+          <li>Análise Léxica</li>
+          <li>Análise Sintática</li>
+          <li>Analise Semântica <em>*</em></li>
+          <li>Geração de Código</li>
+        </ul>
+      </ul>
+      <em> * Normalmente onde ocorre a geração de código intermediario </em>
+    </section>
+    <section class='content' id='fluxo'>
+      <h1>O que é um compilador</h1>
+      <div>
+        <img src="img/intro-1.svg" alt="Arquivo de Entrada">
+        <img src="img/intro-2.svg" alt="Vetor de Tokens">
+        <img src="img/intro-3.svg" alt="Arvore de sintaxe Abstrata">
+        <img src="img/intro-4.svg" alt="Executável">
+      </div>
+    </section>
+    <section class='list content'>
+      <h1>Entradas e Saidas</h1>
+      <ul>
+        <li>
+          Classicamente a entrada é um arquivo escrito em uma linguagem de
+          programação e a saida é um executável
+        </li>
+        <li>Mas podem existir outras aplicações:</li>
+        <ul>
+          <li>Análise de cadeias Quimicas <em>Lazar</em></li>
+          <li>Correção de Estilo <em>Uncrustify</em></li>
+          <li>Transpilação <em>Babel</em></li>
+          <li>Antivírus <em>MalwareBytes</em></li>
+        </ul>
+      </ul>
+    </section>
+    <section class='content' id='processo'>
+      <h1>Diferentes Métodos</h1>
+      <div>
+        <table>
+          <thead>
+            <tr>
+              <th>Análise Lexica</th>
+              <th>Análise Sintática</th>
+              <th>Análise Semântica</th>
+              <th>Otimização</th>
+              <th>Geração de Código</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Autômatos Finitos</td>
+              <td colspan="2"><a href='recursive.html'>Descida Recursiva</a></td>
+              <td rowspan="2">Eliminação de Código Morto</td>
+              <td>Tradução de 3 Endereços</td>
+            </tr>
+            <tr>
+              <td> <a href='regex.html'>Busca por Expressões Regulares</a> </td>
+              <td>Tabela Shift Reduce</td>
+              <td rowspan="2">Redução de Árvore</td>
+              <td>REPL</td>
+            </tr>
+            <tr>
+              <td colspan="2">Análise Packrat</td>
+              <td>Coloração de Variáveis</td>
+              <td>Geração por Bloco</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </body>
+</html>
