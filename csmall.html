@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="pt" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Compilador Csmall</title>
+    <style media="screen">
+      html, body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        min-height: 100vh;
+        width: 100%;
+      }
+
+      section {
+        flex: 0 0 50%;
+        box-sizing: border-box;
+        padding: 2rem 4rem;
+      }
+
+      label {
+        display: block;
+        text-align: center;
+        font-size: 1.7rem;
+        color: #333;
+        margin-bottom: 1rem;
+      }
+
+      div, textarea {
+        width: 100%;
+        height: 90%;
+        resize: none;
+        border: 1px solid #333;
+        border-radius: 0.1rem;
+      }
+
+      #saida {
+        overflow: scroll;
+      }
+
+      #saida div {
+        padding-left: 1rem;
+        border: none;
+      }
+
+      #saida div:nth-child(1) {
+        padding-left: 0;
+      }
+
+      #saida span {
+        display: flex;
+      }
+    </style>
+    <script>
+      function Arvore(label){
+        this.raiz = label;
+        this.filhos = [];
+      }
+
+      Arvore.prototype.addFilho = function (arv) {
+        this.filhos.push(arv);
+      }
+
+      Arvore.prototype.imprime = function(id) {
+        let span = document.createElement('span');
+        span.innerText = this.raiz;
+        document.getElementById(id).appendChild(span);
+
+        span = document.createElement('span');
+        document.getElementById(id).appendChild(span);
+        for (let i = 0; i < this.filhos.length; i++) {
+          let div = document.createElement('div');
+          div.id = id + '-' + i;
+          span.appendChild(div);
+
+          this.filhos[i].imprime(id + '-' + i);
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <section>
+      <label for="entrada">Entrada</label>
+      <textarea name="entrada" id='entrada'>int main(){&#13;&#9;int a,b=10;&#13;&#9;float c=0.0;&#13;&#9;read a;&#13;&#9;if(a > 100)&#13;&#9;&#9;c = a/b;&#13;&#9;print c;&#13;}</textarea>
+    </section>
+    <section>
+      <label>Árvore</label>
+      <div id="saida"></div>
+    </section>
+
+    <script type="text/javascript">
+      const TOKENS = {
+        INT: /^int$/,
+        FLOAT: /^float$/,
+        MAIN: /^main$/,
+        IF: /^if$/,
+        ELSE: /^else$/,
+        WHILE: /^while$/,
+        PRINT: /^print$/,
+        READ: /^read$/,
+        LE: /^<=$/,
+        LT: /^<$/,
+        GE: /^>=$/,
+        GT: /^>$/,
+        PLUS: /^\+$/,
+        MINUS: /^-$/,
+        DIV: /^\/$/,
+        MULT: /^\*$/,
+        LBRACKET: /^\($/,
+        RBRACKET: /^\)$/,
+        LBRACE: /^\{$/,
+        RBRACE: /^\}$/,
+        COMMA: /^,$/,
+        PCOMMA: /^;$/,
+        ID: /^([a-zA-Z_][a-zA-Z0-9_]*)$/,
+        FLOAT_CONST: /^[0-9]+.[0-9]+$/,
+        INTEGER_CONST: /^[0-9]+$/
+      }
+
+      const REGEX = /\s+((int)|(float)|(main)|(if)|(else)|(while)|(print)|(read)|(<=)|(<)|(>=)|(>)|(\+)|(-)|(\/)|(\*)|(\()|(\))|(\{)|(\})|(,)|(;)|(([a-zA-Z_][a-zA-Z0-9_]*))|([0-9]+.[0-9]+)|([0-9]+)|(.))/g;
+
+      document.getElementById('entrada').oninput =
+      function() {
+
+        var entrada = document.getElementById('entrada').value;
+        var tokens = [];
+        while((token = REGEX.exec(entrada)) !== null){
+          token = token[0].trim();
+          let tkn = null;
+          // TODO: Identificar o Token reconhecido
+          tokens.push(token);
+        };
+
+        var i_atual = 0;
+        function match(token) {
+          if(tokens[i_atual] == token) {
+            i_atual++;
+            return new Arvore(token);
+          } else {
+            return false;
+          }
+        }
+
+        function Programa(){
+          let no = new Arvore('Programa');
+
+          if(tmp = match('INT')) no.addFilho(tmp);
+          else return false;
+
+          if(tmp = match('MAIN')) no.addFilho(tmp);
+          else return false;
+
+          if(tmp = match('LBRACKET')) no.addFilho(tmp);
+          else return false;
+
+          if(tmp = match('RBRACKET')) no.addFilho(tmp);
+          else return false;
+
+          if(tmp = match('LBRACE')) no.addFilho(tmp);
+          else return false;
+
+          if(tmp = Decl_Comando()) no.addFilho(tmp);
+          else return false;
+
+          if(tmp = match('RBRACE')) no.addFilho(tmp);
+          else return false;
+
+          return no;
+        }
+
+        function Decl_Comando(){
+          let no = new Arvore('Decl_Comando');
+          if(tokens[i_atual] == 'FLOAT' || tokens[i_atual] == 'INT'){
+            if(tmp = Declaracao()) no.addFilho(tmp);
+            else return false;
+
+            if(tmp = Decl_Comando()) no.addFilho(tmp);
+          } else {
+            if(tmp = Comando()) no.addFilho(tmp);
+            else return false;
+
+            if(tmp = Decl_Comando()) no.addFilho(tmp);
+          }
+          return no;
+        }
+        function Declaracao(){
+          let no = new Arvore('Declaracao');
+          // TODO: Realizar a Produção
+          return no;
+        }
+        function Decl2(){
+          let no = new Arvore('Decl2');
+          // TODO: Realizar a Produção
+          return no;
+        }
+        function Tipo(){
+          let no = new Arvore('Tipo');
+          // TODO: Realizar a Produção
+          return no;
+        }
+        function Comando(){
+          let no = new Arvore('Comando');
+          // TODO: Realizar a Produção
+          return no;
+        }
+        function ComandoPrint(){
+          let no = new Arvore('ComandoPrint');
+          // TODO: Realizar a Produção
+          return no;
+        }
+        function Bloco(){
+          let no = new Arvore('Bloco');
+          // TODO: Realizar a Produção
+          return no;
+        }
+        function Atribuicao(){
+          let no = new Arvore('Atribuicao');
+          // TODO: Realizar a Produção
+          return no;
+        }
+        function ComandoSe(){
+          let no = new Arvore('ComandoSe');
+          // TODO: Realizar a Produção
+          return no;
+        }
+        function ComandoSenao(){
+          let no = new Arvore('ComandoSenao');
+          // TODO: Realizar a Produção
+          return no;
+        }
+        function ComandoEnquanto(){
+          let no = new Arvore('ComandoEnquanto');
+          // TODO: Realizar a Produção
+          return no;
+        }
+        function ComandoRead(){
+          let no = new Arvore('ComandoRead');
+          // TODO: Realizar a Produção
+          return no;
+        }
+        function ComandoPrint(){
+          let no = new Arvore('ComandoPrint');
+          // TODO: Realizar a Produção
+          return no;
+        }
+        function ComandoFor(){
+          let no = new Arvore('ComandoFor');
+          // TODO: Realizar a Produção
+          return no;
+        }
+        function AtribuicaoFor(){
+          let no = new Arvore('AtribuicaoFor');
+          // TODO: Realizar a Produção
+          return no;
+        }
+        function AtribuicaoFor(){
+          let no = new Arvore('AtribuicaoFor');
+          // TODO: Realizar a Produção
+          return no;
+        }
+        function Expressao(){
+          let no = new Arvore('Expressao');
+          // TODO: Realizar a Produção
+          return no;
+        }
+        function RelacaoOpc(){
+          let no = new Arvore('RelacaoOpc');
+          // TODO: Realizar a Produção
+          return no;
+        }
+        function OpRel(){
+          let no = new Arvore('OpRel');
+          // TODO: Realizar a Produção
+          return no;
+        }
+        function Adicao(){
+          let no = new Arvore('Adicao');
+          // TODO: Realizar a Produção
+          return no;
+        }
+        function AdicaoOpc(){
+          let no = new Arvore('AdicaoOpc');
+          // TODO: Realizar a Produção
+          return no;
+        }
+        function OpAdicao(){
+          let no = new Arvore('OpAdicao');
+          // TODO: Realizar a Produção
+          return no;
+        }
+        function Termo(){
+          let no = new Arvore('Termo');
+          // TODO: Realizar a Produção
+          return no;
+        }
+        function TermoOpc(){
+          let no = new Arvore('TermoOpc');
+          // TODO: Realizar a Produção
+          return no;
+        }
+        function OpMult(){
+          let no = new Arvore('OpMult');
+          // TODO: Realizar a Produção
+          return no;
+        }
+        function Fator(){
+          let no = new Arvore('Fator');
+          // TODO: Realizar a Produção
+          return no;
+        }
+
+        var arvore = Programa();
+
+        document.getElementById('saida');
+        if(arvore) arvore.imprime('saida');
+        else document.getElementById('saida').innerText = 'Erro'
+      }
+
+      document.getElementById('entrada').oninput();
+    </script>
+  </body>
+</html>
